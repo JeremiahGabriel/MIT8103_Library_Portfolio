@@ -10,7 +10,7 @@ The project covers database design, query processing and optimisation, transacti
 
 ## Case Study
 
-I chosed a university library as my case study because its operations involve managing different types of related records. The database is designed to support the following activities:
+I chose a university library as my case study because its operations involve managing different types of related records. The database is designed to support the following activities:
 
 - Managing student and staff records.
 - Organising books by category and author.
