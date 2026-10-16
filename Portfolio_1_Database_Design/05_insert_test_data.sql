@@ -138,6 +138,7 @@ VALUES
     );
 
 -- 8. Loans and returns
+-- Standard loan period: 14 days
 INSERT INTO Loan
     (copy_id, student_id, staff_id, loan_date, due_date, return_date)
 VALUES
@@ -146,7 +147,7 @@ VALUES
         (SELECT student_id FROM Student WHERE student_number = 'STU001'),
         (SELECT staff_id FROM Staff WHERE staff_number = 'STF001'),
         DATE '2026-09-01',
-        DATE '2026-09-08',
+        DATE '2026-09-15',
         DATE '2026-09-07'
     ),
     (
@@ -154,7 +155,7 @@ VALUES
         (SELECT student_id FROM Student WHERE student_number = 'STU002'),
         (SELECT staff_id FROM Staff WHERE staff_number = 'STF002'),
         DATE '2026-09-20',
-        DATE '2026-09-27',
+        DATE '2026-10-04',
         NULL
     );
 

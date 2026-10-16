@@ -1,4 +1,3 @@
-
 # MIT8103 Advanced Database Systems
 
 ## Portfolio 2: Query Processing and Optimisation
@@ -10,9 +9,9 @@
 
 I tested five SQL queries to check the library inventory, active loans, overdue loans, fine payments and query performance.
 
-The inventory query returned three book titles with their categories, authors, total copies and available copies. The active-loan query returned one active loan. The overdue-loan query identified loan ID 2, belonging to David Bello, as 18 days overdue on 15 October 2026. At the configured daily rate of ₦100, the estimated fine was ₦1,800.
+The inventory query returned three book titles with their categories, authors, total copies and available copies. The active-loan query returned one active loan. The overdue-loan query identified loan ID 2, belonging to David Bello, as 12 days overdue on 16 October 2026. At the configured daily rate of ₦100, the estimated fine was ₦1,200.
 
-The fine-payment query returned two recorded fine entries. The outstanding balance for loan ID 2 was ₦1,200. This differs from the estimated fine because the overdue-loan query calculates the fine based on the number of overdue days, while the fine-payment query retrieves the balance recorded in the database.
+The fine-payment query returned two recorded fine entries. The outstanding balance for loan ID 2 was ₦1,200. This matches the estimated fine for 12 overdue days at ₦100 per day. The overdue-loan query calculates the estimated fine based on the number of overdue days, while the fine-payment query retrieves the balance recorded in the database.
 
 ### 2. Indexing Experiment
 
@@ -24,17 +23,19 @@ I also checked the existing partial index, `idx_loan_active_due_date`, which cov
 
 ### 3. Execution-Plan Analysis
 
-I examined the execution plan for the overdue-loan query to see how PostgreSQL processed it. The original test used a sequential scan on `loan`. The query returned one row, filtered out one row and recorded one shared buffer hit.
+I examined the execution plan for the overdue-loan query to see how PostgreSQL processed it. Both tests used a sequential scan on `loan`. The query returned one row, filtered out one row and recorded one shared buffer hit during execution.
 
 | Measurement | Original baseline | Repeat test |
 |---|---:|---:|
-| Execution time | 0.065 ms | 0.116 ms |
-| Planning time | 0.229 ms | 0.264 ms |
-| Shared buffers hit | 1 | 1 |
+| Execution time | 0.143 ms | 0.040 ms |
+| Planning time | 0.295 ms | 0.841 ms |
+| Shared buffers hit during execution | 1 | 1 |
+| Shared buffers hit during planning | Not reported | 76 |
 | Rows returned | 1 | 1 |
+| Rows removed by filter | 1 | 1 |
 | Scan method | Sequential | Sequential |
 
-The repeat test took 0.116 ms, compared with 0.065 ms in the original test. Although the execution time was higher, this difference does not establish a consistent change in performance. The dataset is small, and the two measurements alone are not enough to determine whether the query became slower.
+The repeat test took 0.040 ms, compared with 0.143 ms in the original test. Although the execution time was lower, this difference does not establish a consistent change in performance. Planning time increased from 0.295 ms to 0.841 ms, and the repeat test reported 76 shared buffer hits during planning. The dataset is small, and the two measurements alone are not enough to determine whether the query became faster.
 
 I also recorded the inventory query's execution time before and after creating the index and refreshing the table statistics with `ANALYZE`. The execution time was 0.678 ms before index creation, 0.647 ms after creating the index and 0.403 ms after running `ANALYZE`.
 
@@ -52,4 +53,4 @@ The tests also showed that creating an index does not automatically make a query
 
 This portfolio involved testing SQL queries, creating an index and examining query execution plans in the University Library Management System. I used the results to check query correctness and observe how PostgreSQL handled the queries before and after the database changes.
 
-The tests did not demonstrate a clear performance improvement from the new index. Since the dataset was small, a larger dataset and repeated tests under consistent conditions would be needed to assess its effectiveness more reliably. The results provide a record of the tests carried out and the execution behaviour observed, without claiming a performance improvement that the measurements do not establish.
+The tests did not demonstrate a clear performance improvement from the new index. Since the dataset was small, a larger dataset and repeated tests under consistent conditions would be needed to assess its effectiveness more reliably. The results provide a record of the tests carried out and the execution behaviour observed, without claiming a performance improvement which the measurements do not establish.

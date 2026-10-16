@@ -21,17 +21,17 @@ The query returned one active loan for David Bello.
 
 | Loan ID | Student Number | Student Name | Book | Copy ID | Loan Date | Due Date |
 |---|---|---|---|---|---|---|
-| 2 | STU002 | David Bello | Operating System Concepts (9th Edition) | COPY003 | 2026-09-20 | 2026-09-27 |
+| 2 | STU002 | David Bello | Operating System Concepts (9th Edition) | COPY003 | 2026-09-20 | 2026-10-04 |
 
 ### 3. Overdue Loans Query
 
-As of 15 October 2026, the query identified one overdue loan.
+As of 16 October 2026, the query identified one overdue loan.
 
 | Loan ID | Student | Due Date | Days Overdue | Daily Rate | Estimated Fine |
 |---|---|---|---:|---:|---:|
-| 2 | David Bello | 2026-09-27 | 18 | ₦100.00 | ₦1,800.00 |
+| 2 | David Bello | 2026-10-04 | 12 | ₦100.00 | ₦1,200.00 |
 
-The estimated fine was calculated using the number of overdue days and the configured daily rate of ₦100.
+The estimated fine was calculated using the number of overdue days and the configured daily rate of ₦100. The due date follows the standard 14-day loan period.
 
 ### 4. Fine and Payment Query
 
@@ -42,7 +42,7 @@ The query returned two recorded fine entries.
 | 1 | 1 | Ada Okafor | ₦0.00 | ₦0.00 | ₦0.00 | PAID |
 | 2 | 2 | David Bello | ₦1,200.00 | ₦0.00 | ₦1,200.00 | UNPAID |
 
-For loan ID 2, the recorded outstanding balance was ₦1,200.00, while the overdue-loan query estimated a current fine of ₦1,800.00. The two values come from different queries: one retrieves the recorded fine balance, while the other calculates an estimate based on the overdue period.
+For loan ID 2, the recorded outstanding balance was ₦1,200.00. This matches the estimated fine for 12 overdue days at ₦100 per day as of 16 October 2026. The overdue-loan query calculates an estimate based on the overdue period, while the fine-payment query retrieves the recorded fine balance from the database.
 
 ### 5. Overdue-Loan Execution Plan
 
@@ -65,12 +65,12 @@ WHERE l.return_date IS NULL
 ```text
 Seq Scan on loan l
   (cost=0.00..1.03 rows=1 width=28)
-  (actual time=0.037..0.038 rows=1.00 loops=1)
+  (actual time=0.108..0.109 rows=1.00 loops=1)
   Filter: ((return_date IS NULL) AND (due_date < CURRENT_DATE))
   Rows Removed by Filter: 1
   Buffers: shared hit=1
-Planning Time: 0.229 ms
-Execution Time: 0.065 ms
+Planning Time: 0.295 ms
+Execution Time: 0.143 ms
 ```
 
 **Repeat test results**
@@ -78,15 +78,17 @@ Execution Time: 0.065 ms
 ```text
 Seq Scan on loan l
   (cost=0.00..1.03 rows=1 width=28)
-  (actual time=0.034..0.036 rows=1.00 loops=1)
+  (actual time=0.026..0.027 rows=1.00 loops=1)
   Filter: ((return_date IS NULL) AND (due_date < CURRENT_DATE))
   Rows Removed by Filter: 1
   Buffers: shared hit=1
-Planning Time: 0.264 ms
-Execution Time: 0.116 ms
+Planning:
+  Buffers: shared hit=76
+Planning Time: 0.841 ms
+Execution Time: 0.040 ms
 ```
 
-Both plans used a sequential scan on `loan`, returned one row, filtered out one row and recorded one shared buffer hit. The total execution time increased from 0.065 ms to 0.116 ms in the repeat test. These measurements do not establish a consistent performance change, and the plan does not show the index being used.
+Both plans used a sequential scan on `loan`, returned one row, filtered out one row and recorded one shared buffer hit during execution. The total execution time decreased from 0.143 ms to 0.040 ms in the repeat test. Planning time increased from 0.295 ms to 0.841 ms, and the repeat test reported 76 shared buffer hits during planning. These measurements do not establish a consistent performance change, and the plan does not show the index being used.
 
 ### 6. Inventory Query Performance
 
