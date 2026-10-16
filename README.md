@@ -4,72 +4,106 @@
 
 This repository contains my individual practical portfolio for MIT8103 Advanced Database Systems at Miva Open University.
 
-For this project, I designed and implemented a **University Library Management System** using PostgreSQL. The system manages students, staff, books, authors, categories, physical book copies, loans, returns, fines and fine rates.
+The project is based on the **University Library Management System**, which I developed using PostgreSQL and MongoDB. The system covers students, staff, books, authors, categories, physical book copies, loans, returns, fines and fine rates.
 
-The project covers database design, query processing and optimisation, transaction management, NoSQL data modelling, and distributed and cloud database concepts.
+The five portfolio activities cover relational database design, query optimisation, transactions and concurrency, NoSQL data modelling, and distributed and cloud database concepts.
 
 ## Case Study
 
-I chose a university library as my case study because its operations involve managing different types of related records. The database is designed to support the following activities:
+I chose a university library for this project because its operations involve managing related records and enforcing rules across different parts of a database.
+
+The system supports:
 
 - Managing student and staff records.
 - Organising books by category and author.
-- Keeping track of individual physical book copies.
+- Tracking individual physical book copies.
 - Recording book loans and returns.
-- Tracking overdue fines and payments.
-- Applying fine rates during defined periods.
+- Calculating and tracking overdue fines and payments.
+- Maintaining fine rates for defined periods.
 
-PostgreSQL is used for the relational database implementation. Other database technologies will be covered in the relevant portfolio sections.
+PostgreSQL is used for the relational database, while MongoDB is used for the NoSQL data model and cloud database activities.
 
 ## Portfolio Structure
 
 | Portfolio | Topic | Status |
 |---|---|---|
-| Portfolio 1 | Database Design and Modelling | Completed and uploaded |
-| Portfolio 2 | Query Processing and Optimisation | Pending |
-| Portfolio 3 | Transactions and Concurrency | Pending |
-| Portfolio 4 | NoSQL and Advanced Data Models | Pending |
-| Portfolio 5 | Distributed and Cloud Database Exercise | Pending |
-| Final Documentation | Summary, evidence, reflection, references and AI-use declaration | Pending |
-
-I will update the status as I complete and upload each portfolio.
+| Portfolio 1 | Database Design and Modelling | Completed |
+| Portfolio 2 | Query Processing and Optimisation | Completed |
+| Portfolio 3 | Transactions and Concurrency | Completed |
+| Portfolio 4 | NoSQL and Advanced Data Models | Completed |
+| Portfolio 5 | Distributed and Cloud Database | Completed |
+| Final Documentation | Project summary, evidence, reflection, references and AI-use declaration | Completed |
 
 ## Portfolio 1: Database Design and Modelling
 
-Portfolio 1 covers the database design, implementation and testing. It includes the following files and evidence:
-
-- SQL scripts for creating the database tables and inserting test data.
-- Checks for foreign keys and database constraints.
-- Validation tests to check that the database rules work as expected.
-- A partial unique index to prevent the same physical book copy from having more than one active loan.
-- A trigger to prevent overlapping fine-rate periods.
-- An editable entity-relationship diagram and its PNG version.
-- Screenshots of the implementation and test results.
-- Documentation explaining the schema, keys, constraints, normalisation, testing and limitations.
+This portfolio covers the design, implementation and testing of the relational database.
 
 The database contains ten tables: `Student`, `Staff`, `Category`, `Author`, `Book`, `BookAuthor`, `BookCopy`, `Loan`, `FineRate` and `Fine`.
 
+The work includes SQL scripts, test data, integrity constraints, validation tests, a partial unique index to prevent multiple active loans for the same physical copy, a trigger to prevent overlapping fine-rate periods, and an entity-relationship diagram.
+
+The SQL scripts, documentation and screenshots are stored in [Portfolio 1: Database Design](Portfolio_1_Database_Design/).
+
+## Portfolio 2: Query Processing and Optimisation
+
+This portfolio covers SQL query development, execution-plan analysis and index testing in PostgreSQL.
+
+I examined query execution plans and compared the recorded execution times before and after creating an index and refreshing table statistics. The tests did not establish that the index caused an improvement in query performance.
+
+The scripts, results and documentation are stored in [Portfolio 2: Query Optimisation](Portfolio_2_Query_Optimisation/).
+
+## Portfolio 3: Transactions and Concurrency
+
+This portfolio examines how PostgreSQL handles transactions and concurrent access to the library database.
+
+The work includes `COMMIT` and `ROLLBACK` tests, transaction isolation across two sessions, and testing the rule that prevents multiple active loans for the same physical book copy. I also compared recorded fine balances with estimated overdue fine calculations.
+
+The scripts, test results and documentation are stored in [Portfolio 3: Transactions and Concurrency](Portfolio_3_Transactions_Concurrency/).
+
+## Portfolio 4: NoSQL and Advanced Data Models
+
+This portfolio uses MongoDB Community Server and MongoDB Compass to represent the library's book collection as documents.
+
+The collection contains three book documents with book details, authors, categories and embedded physical-copy information. I tested queries for retrieving all books, filtering by category, finding available copies and finding copies currently on loan.
+
+The implementation files and supporting evidence are stored in [Portfolio 4: NoSQL](Portfolio_4_NoSQL/).
+
+## Portfolio 5: Distributed and Cloud Database
+
+This portfolio uses MongoDB Atlas to deploy the NoSQL book collection to a cloud environment.
+
+I created a cluster named `LibraryCloudCluster`, migrated the three book documents from the local MongoDB collection and tested three queries against the cloud collection. All three queries returned the expected document counts.
+
+The Atlas overview showed a three-node replica set with one primary and two secondary members. I also examined replication, availability, consistency considerations and sharding. I did not carry out a controlled failover test or configure sharding. Both are documented as limitations of the implementation.
+
+The implementation documentation and screenshots are stored in [Portfolio 5: Distributed and Cloud Database](Portfolio_5_Distributed_Cloud/).
+
+## Final Documentation
+
+The `Final_Documentation/` folder contains the overall portfolio summary, including the project overview, completed activities, supporting evidence, individual reflection, references and AI-use declaration.
+
+The final summary is available in [Final Portfolio Summary](Final_Documentation/Final_Portfolio_Summary.md).
+
+## Repository Organisation
+
+The repository is organised into five portfolio folders and a final documentation folder. Each portfolio contains the relevant implementation files, documentation and supporting evidence.
+
+I used Git to track changes and maintain a record of the project's development.
+
 ## Technologies
 
-- PostgreSQL
-- SQL
+- PostgreSQL and SQL
+- MongoDB Community Server
+- MongoDB Compass
+- MongoDB Atlas
 - Git and GitHub
 - Visual Studio Code
 - diagrams.net (draw.io)
-- MongoDB, for the planned NoSQL portfolio work
-
-## Evidence and Documentation
-
-Each portfolio will include its implementation files, documentation and supporting evidence. Screenshots of actual database operations and test results will be used to show how the implementation works.
-
-The `Final_Documentation` folder will contain the overall project summary, my reflection, references and AI-use declaration.
 
 ## Academic Integrity and AI Use
 
-I used AI tools to support my learning, understand technical concepts, plan my work and review my implementation. I am responsible for understanding the database design, checking the SQL, running the tests and verifying the final work.
+I used ChatGPT as a learning and development aid to clarify database concepts, obtain technical guidance, review query results and improve the project documentation.
 
-The final documentation will explain which AI tools I used, how they supported the project and how I reviewed and tested the resulting material.
+I checked the guidance against my implementation and tested database operations and queries in my local environment and MongoDB Atlas. I also reviewed the documentation to distinguish between features I tested and features I discussed but did not implement.
 
-## Project Status
-
-Portfolio 1 has been committed to the repository. I will add the remaining portfolios as I complete them and use Git commits to keep track of changes throughout the project.
+I take responsibility for understanding, verifying and explaining the work submitted in this portfolio.
