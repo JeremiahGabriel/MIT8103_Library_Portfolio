@@ -37,9 +37,7 @@ I examined the execution plan for the overdue-loan query to see how PostgreSQL p
 
 The repeat test took 0.040 ms, compared with 0.143 ms in the original test. Although the execution time was lower, this difference does not establish a consistent change in performance. Planning time increased from 0.295 ms to 0.841 ms, and the repeat test reported 76 shared buffer hits during planning. The dataset is small, and the two measurements alone are not enough to determine whether the query became faster.
 
-I also recorded the inventory query's execution time before and after creating the index and refreshing the table statistics with `ANALYZE`. The execution time was 0.678 ms before index creation, 0.647 ms after creating the index and 0.403 ms after running `ANALYZE`.
-
-Although the final execution time was lower, PostgreSQL still used a sequential scan on `bookcopy`. I therefore cannot conclude that the index caused the reduction. The measurements show the differences between the tests, but further testing would be needed to establish whether the changes had a consistent effect on performance.
+The saved inventory-query screenshot records an execution time of 0.979 ms. However, the available evidence does not establish a verified before-and-after comparison before index creation, after index creation and after running `ANALYZE`. PostgreSQL continued to use a sequential scan on `bookcopy`, which contains only four book copies. Therefore, the recorded evidence does not establish a clear performance improvement from the index.
 
 ### 4. Findings
 
