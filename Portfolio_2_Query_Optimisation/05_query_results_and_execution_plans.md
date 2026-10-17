@@ -7,17 +7,21 @@
 
 ### 1. Library Inventory Query
 
-The query returned three book titles with their categories and copy availability.
+The inventory query returned three book titles with their book IDs, total copies and available copies.
 
-| Book ID | Title | Category | Total Copies | Available Copies |
-|---|---|---|---:|---:|
-| 3 | Database System Concepts (7th Edition) | Database Systems | 1 | 1 |
-| 1 | Database Systems: A Practical Approach to Design, Implementation, and Management (6th Edition) | Database Systems | 2 | 2 |
-| 2 | Operating System Concepts (9th Edition) | Computer Science | 1 | 0 |
+| Book ID | Title | Total Copies | Available Copies |
+|---|---|---:|---:|
+| 3 | Database System Concepts (7th Edition) | 1 | 1 |
+| 1 | Database Systems: A Practical Approach to Design, Implementation, and Management (6th Edition) | 2 | 2 |
+| 2 | Operating System Concepts (9th Edition) | 1 | 0 |
+
+The saved inventory-query screenshot records an execution time of 0.979 ms for the inventory query.
+
+The screenshot does not provide a verified before-and-after comparison. Therefore, the available evidence does not establish a reliable execution-time comparison before and after index creation or after running `ANALYZE`.
 
 ### 2. Active Loans Query
 
-The query returned one active loan for David Bello.
+The active-loan query returned one active loan for David Bello.
 
 | Loan ID | Student Number | Student Name | Book | Copy ID | Loan Date | Due Date |
 |---|---|---|---|---|---|---|
@@ -35,7 +39,7 @@ The estimated fine was calculated using the number of overdue days and the confi
 
 ### 4. Fine and Payment Query
 
-The query returned two recorded fine entries.
+The fine-payment query returned two recorded fine entries.
 
 | Fine ID | Loan ID | Student | Fine Amount | Amount Paid | Outstanding Balance | Status |
 |---|---|---|---:|---:|---:|---|
@@ -46,7 +50,7 @@ For loan ID 2, the recorded outstanding balance was ₦1,200.00. This matches th
 
 ### 5. Overdue-Loan Execution Plan
 
-I used the following query to examine the execution plan and performance of the overdue-loan query:
+I used the following query to examine the execution plan and performance of the overdue-loan query.
 
 ```sql
 EXPLAIN (ANALYZE, BUFFERS)
@@ -88,22 +92,34 @@ Planning Time: 0.841 ms
 Execution Time: 0.040 ms
 ```
 
-Both plans used a sequential scan on `loan`, returned one row, filtered out one row and recorded one shared buffer hit during execution. The total execution time decreased from 0.143 ms to 0.040 ms in the repeat test. Planning time increased from 0.295 ms to 0.841 ms, and the repeat test reported 76 shared buffer hits during planning. These measurements do not establish a consistent performance change, and the plan does not show the index being used.
+Both plans used a sequential scan on `loan`, returned one row, filtered out one row and recorded one shared buffer hit during execution.
 
-### 6. Inventory Query Performance
+| Measurement | Original baseline | Repeat test |
+|---|---:|---:|
+| Execution time | 0.143 ms | 0.040 ms |
+| Planning time | 0.295 ms | 0.841 ms |
+| Shared buffers hit during execution | 1 | 1 |
+| Shared buffers hit during planning | Not reported | 76 |
+| Rows returned | 1 | 1 |
+| Rows removed by filter | 1 | 1 |
+| Scan method | Sequential | Sequential |
 
-The inventory query produced the following execution times during testing.
+The repeat test took 0.040 ms, compared with 0.143 ms in the original test. Although execution time was lower, these two measurements do not establish a consistent performance change. Planning time increased from 0.295 ms to 0.841 ms, and the repeat test reported 76 shared buffer hits during planning.
 
-| Test | Execution Time |
-|---|---:|
-| Before index creation | 0.678 ms |
-| After index creation | 0.647 ms |
-| After running `ANALYZE` | 0.403 ms |
+The dataset is small, and the execution plans do not show the candidate index being used for this query. The recorded measurements are insufficient to determine whether the query would perform better with a larger dataset.
 
-PostgreSQL continued to use a sequential scan on `bookcopy` after the index was created. Although the lowest execution time was recorded after running `ANALYZE`, the measurements do not establish that either the index or the statistics update caused the reduction. The table contains only four book copies, so further testing with a larger dataset would be needed to assess the index's effectiveness.
+### 6. Indexing and Inventory Performance Findings
 
-### 7. Evidence Summary
+I created a B-tree index named `idx_bookcopy_book_id` on `bookcopy(book_id)` to examine its effect on the inventory query.
 
-The query results documented the library inventory, active loans, overdue loans and recorded fine balances. The execution plans showed the scan method, rows filtered, buffer activity and recorded execution times.
+After creating the index, I ran the inventory query again and obtained the same results. PostgreSQL continued to use a sequential scan on `bookcopy`. Since the table contains only four book copies, a sequential scan is reasonable for this small dataset.
 
-The tests did not demonstrate a clear performance benefit from the candidate index. Testing with a larger dataset and repeated runs under consistent conditions would provide a more reliable basis for evaluating its effectiveness.
+I also examined the partial index `idx_loan_active_due_date`, which covers `due_date` for rows where `return_date IS NULL`. PostgreSQL did not use this index for the overdue-loan query during the recorded tests.
+
+The available evidence does not demonstrate a clear performance benefit from the candidate indexes. The inventory screenshot does not establish a verified before-and-after timing comparison. Larger datasets and repeated tests under consistent conditions would provide a stronger basis for evaluating index effectiveness.
+
+### 7. Conclusion
+
+The queries returned the documented inventory, active-loan, overdue-loan and fine-payment results. The execution plans showed how PostgreSQL processed the overdue-loan query and recorded its execution and planning times.
+
+The tests did not establish a clear performance improvement from the new index. The available evidence supports the recorded query results and execution plans, but it does not establish a reliable before-and-after performance comparison. Further testing with a larger dataset and repeated runs under consistent conditions would provide stronger evidence of index effectiveness.
