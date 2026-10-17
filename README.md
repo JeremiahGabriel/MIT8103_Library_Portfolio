@@ -48,7 +48,7 @@ The SQL scripts, documentation and screenshots are stored in [Portfolio 1: Datab
 
 This portfolio covers SQL query development, execution-plan analysis and index testing in PostgreSQL.
 
-I examined query execution plans and compared the recorded execution times before and after creating an index and refreshing table statistics. The tests did not establish that the index caused an improvement in query performance.
+I examined query execution plans and recorded execution and planning times. The available evidence did not establish a reliable before-and-after performance comparison or demonstrate a clear performance improvement from the candidate indexes.
 
 The scripts, results and documentation are stored in [Portfolio 2: Query Optimisation](Portfolio_2_Query_Optimisation/).
 
@@ -107,3 +107,9 @@ I used ChatGPT as a learning and development aid to clarify database concepts, o
 I checked the guidance against my implementation and tested database operations and queries in my local environment and MongoDB Atlas. I also reviewed the documentation to distinguish between features I tested and features I discussed but did not implement.
 
 I take responsibility for understanding, verifying and explaining the work submitted in this portfolio.
+
+## GitHub Repository
+
+This repository contains the practical work, SQL scripts, documentation, and supporting evidence for the MIT8103 Advanced Database Systems Individual Practical Database Portfolio.
+
+**Repository URL:** https://github.com/JeremiahGabriel/MIT8103_Library_Portfolio
