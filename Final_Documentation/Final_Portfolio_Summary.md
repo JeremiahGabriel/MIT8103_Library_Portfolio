@@ -1,10 +1,10 @@
 # MIT8103 Advanced Database Systems
 
-**Individual Practical Database Portfolio**
+**Practical Database Portfolio**
 
-**Case Study:** University Library Management System  
-**Institution:** Miva Open University  
-**Session:** 2026/2027 First Semester
+**Name:** Jeremiah Gabriel  
+**ID:** 301926399  
+**Case Study:** University Library Management System
 
 ## 1. Project Overview
 
